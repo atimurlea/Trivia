@@ -8,6 +8,9 @@
 
 import Foundation
 
+/*
+ Singleton class that handles server messages that are send/received to/from server
+ */
 class SocketIOManager: NSObject {
     static let sharedInstance = SocketIOManager()
     
@@ -84,6 +87,4 @@ class SocketIOManager: NSObject {
             }
         }
     }
-    
-    
 }

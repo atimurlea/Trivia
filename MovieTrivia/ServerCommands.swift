@@ -8,8 +8,9 @@
 
 import Foundation
 
-import Foundation
-
+/*
+ Singleton class with server commands
+ */
 class ServerCommands: NSObject {
     static let sharedInstance = ServerCommands();
     

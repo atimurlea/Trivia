@@ -8,6 +8,10 @@
 
 import UIKit
 
+/*
+ Main view controller
+ Contains all the elements used in client appliction
+ */
 class ViewController: UIViewController {
     
     @IBOutlet weak var nameLabel: UILabel!
@@ -77,17 +81,6 @@ class ViewController: UIViewController {
         self.present(alertController, animated: true, completion: nil);
     }
     
-    //MARK: Notifications
-    func addNotifications(){
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onStartGame), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.START_GAME), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onPrepareRound), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.PREPARE_FOR_ROUND), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onStartRound), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.START_ROUND), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onEndGame), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.END_GAME), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onSendScore), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.SEND_SCORE), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onTick), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.TICK), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onError), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.RECEIVE_ERROR), object: nil)
-    }
-    
     func startGameInit(){
         self.sendResponseButton.isHidden = true
         if(alert != nil){
@@ -97,6 +90,17 @@ class ViewController: UIViewController {
         self.roundLabel.text = Texts.sharedInstance.ROUND
         self.movieLabel.text = Texts.sharedInstance.SELECTED_MOVIE
         self.tickLabel.text = Texts.sharedInstance.PREPARE_FOR_GAME
+    }
+    
+    //MARK: Notifications
+    func addNotifications(){
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onStartGame), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.START_GAME), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onPrepareRound), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.PREPARE_FOR_ROUND), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onStartRound), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.START_ROUND), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onEndGame), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.END_GAME), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onSendScore), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.SEND_SCORE), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onTick), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.TICK), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onError), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.RECEIVE_ERROR), object: nil)
     }
     
     func onStartGame(notification: NSNotification){

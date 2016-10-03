@@ -8,6 +8,9 @@
 
 import Foundation
 
+/*
+ Singleton class with general texts
+ */
 class Texts: NSObject {
     static let sharedInstance = Texts();
     
