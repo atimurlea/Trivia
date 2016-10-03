@@ -14,7 +14,7 @@ class Texts: NSObject {
     let WELCOME = "Welcome back, "
     let SCORE = "Your score is: "
     let TIMER = "Timer: "
-    let SELECTED_MOVIE = "Selected movie is: "
+    let SELECTED_MOVIE = "Movie: "
     let PREPARE_FOR_GAME = "Prepare yourself. Game is ready to start!"
     let ROUND = "Round: "
 }
