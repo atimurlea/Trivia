@@ -42,6 +42,12 @@ class SocketIOManager: NSObject {
             }
         }
         
+        self.socket.on(ServerCommands.sharedInstance.PREPARE_FOR_ROUND) {data, ack in
+            if let value = data[0] as? Int {
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: ServerCommands.sharedInstance.PREPARE_FOR_ROUND), object: value)
+            }
+        }
+        
         self.socket.on(ServerCommands.sharedInstance.START_ROUND) {data, ack in
             if let value = data[0] as? String {
                 let dict = ["value" : value, "round":data[1] as? Int] as [String : Any]
@@ -68,6 +74,13 @@ class SocketIOManager: NSObject {
             if let value = data[0] as? Int {
                 let dict = ["value" : value]
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: ServerCommands.sharedInstance.TICK), object: value, userInfo:dict)
+            }
+        }
+        
+        self.socket.on(ServerCommands.sharedInstance.RECEIVE_ERROR) {data, ack in
+            if let value = data[0] as? String {
+                let dict = ["value" : value]
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: ServerCommands.sharedInstance.RECEIVE_ERROR), object: value, userInfo:dict)
             }
         }
     }

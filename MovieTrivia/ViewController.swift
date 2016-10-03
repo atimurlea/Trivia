@@ -10,16 +10,17 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var movieLabel: UILabel!
-    @IBOutlet weak var sendResponseButton: UIButton!
-    @IBOutlet weak var tickLabel: UITextField!
-    @IBOutlet weak var resultTextFileld: UITextField!
+    @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var roundLabel: UILabel!
+    @IBOutlet weak var movieLabel: UILabel!
+    @IBOutlet weak var tickLabel: UITextField!
+    @IBOutlet weak var sendResponseButton: UIButton!
+    @IBOutlet weak var resultTextFileld: UITextField!
+    
     
     var nickname: String?
-    var endGameAlert:UIAlertController?
+    var alert:UIAlertController?
     
     
     //MARK: - UIViewController
@@ -27,6 +28,7 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        self.sendResponseButton.isHidden = true
         initialize(value: true)
     }
     
@@ -49,10 +51,8 @@ class ViewController: UIViewController {
         self.scoreLabel.isHidden = value
         self.movieLabel.isHidden = value
         self.tickLabel.isHidden = value
-         self.roundLabel.isHidden = value
+        self.roundLabel.isHidden = value
         self.resultTextFileld.isHidden = value
-        self.sendResponseButton.isUserInteractionEnabled = !value
-        self.sendResponseButton.isUserInteractionEnabled = !value
     }
 
     func askForNickname() {
@@ -80,21 +80,34 @@ class ViewController: UIViewController {
     //MARK: Notifications
     func addNotifications(){
         NotificationCenter.default.addObserver(self, selector: #selector(self.onStartGame), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.START_GAME), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onPrepareRound), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.PREPARE_FOR_ROUND), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.onStartRound), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.START_ROUND), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.onEndGame), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.END_GAME), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.onSendScore), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.SEND_SCORE), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.onTick), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.TICK), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onError), name:NSNotification.Name(rawValue: ServerCommands.sharedInstance.RECEIVE_ERROR), object: nil)
     }
     
-    func onStartGame(notification: NSNotification){
-        //self.initialize(value: true)
-        if(endGameAlert != nil){
-            endGameAlert!.dismiss(animated: true, completion: nil)
+    func startGameInit(){
+        self.sendResponseButton.isHidden = true
+        if(alert != nil){
+            alert!.dismiss(animated: true, completion: nil)
         }
         self.scoreLabel.text = Texts.sharedInstance.SCORE
         self.roundLabel.text = Texts.sharedInstance.ROUND
         self.movieLabel.text = Texts.sharedInstance.SELECTED_MOVIE
         self.tickLabel.text = Texts.sharedInstance.PREPARE_FOR_GAME
+    }
+    
+    func onStartGame(notification: NSNotification){
+        self.startGameInit()
+    }
+    
+    func onPrepareRound(notification: NSNotification){
+        self.tickLabel.text = Texts.sharedInstance.PREPARE_FOR_ROUND
+        self.resultTextFileld.text = "Movie's year"
+        self.resultTextFileld.isEnabled = false
+        self.sendResponseButton.isHidden = true
     }
     
     func onStartRound(notification: NSNotification){
@@ -105,6 +118,10 @@ class ViewController: UIViewController {
             self.roundLabel.text = Texts.sharedInstance.ROUND + round.description
             self.resultTextFileld.isUserInteractionEnabled = true
             self.sendResponseButton.isUserInteractionEnabled = true
+            
+            self.resultTextFileld.text = ""
+            self.resultTextFileld.isEnabled = true
+            self.sendResponseButton.isHidden = false
         }
     }
     
@@ -113,8 +130,8 @@ class ViewController: UIViewController {
             let name:String = info["name"]! as! String;
             let score:Int = info["score"]! as! Int;
             
-            endGameAlert = UIAlertController(title: "GAME OVER", message: "User \(name) won with a score of \(score)", preferredStyle: UIAlertControllerStyle.alert)
-            self.present(endGameAlert!, animated: true, completion: nil);
+            alert = UIAlertController(title: "GAME OVER", message: "User \(name) won with a score of \(score)", preferredStyle: UIAlertControllerStyle.alert)
+            self.present(alert!, animated: true, completion: nil);
         }
     }
     
@@ -132,12 +149,27 @@ class ViewController: UIViewController {
         }
     }
     
+    func onError(notification: NSNotification){
+        if let info = notification.userInfo {
+            let message:String = info["value"]! as! String;
+            
+            alert = UIAlertController(title: "Server Error", message: message, preferredStyle: UIAlertControllerStyle.alert)
+            let OKAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { (action) -> Void in
+                self.startGameInit()
+            }
+            alert?.addAction(OKAction)
+            self.present(alert!, animated: true, completion: nil);
+            
+        }
+    }
+    
     //MARK: - Buttons handlers
     @IBAction func sendResponseToServer(_ sender: AnyObject) {
         let selectedYear = resultTextFileld.text
         self.sendResponseButton.isUserInteractionEnabled = false
         resultTextFileld.resignFirstResponder()
         SocketIOManager.sharedInstance.sendResponse(nickname: self.nickname!, response: selectedYear!)
+        self.sendResponseButton.isHidden = true
     }
 }
 

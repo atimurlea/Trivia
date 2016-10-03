@@ -17,4 +17,5 @@ class Texts: NSObject {
     let SELECTED_MOVIE = "Movie: "
     let PREPARE_FOR_GAME = "Prepare yourself. Game is ready to start!"
     let ROUND = "Round: "
+    let PREPARE_FOR_ROUND = "Prepare for next round!"
 }

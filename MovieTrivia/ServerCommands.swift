@@ -13,11 +13,13 @@ import Foundation
 class ServerCommands: NSObject {
     static let sharedInstance = ServerCommands();
     
-    let START_GAME = "startGame";
-    let START_ROUND = "startRound";
-    let TICK = "tick";
-    let CONNECT_USER = "connectUser";
-    let RESPONSE = "response";
-    let END_GAME = "endGame";
-    let SEND_SCORE = "sendScore";
+    let START_GAME = "startGame"
+    let START_ROUND = "startRound"
+    let TICK = "tick"
+    let CONNECT_USER = "connectUser"
+    let RESPONSE = "response"
+    let END_GAME = "endGame"
+    let SEND_SCORE = "sendScore"
+    let PREPARE_FOR_ROUND = "prepareRound"
+    var RECEIVE_ERROR = "sendError";
 }
