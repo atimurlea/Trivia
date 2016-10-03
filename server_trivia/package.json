@@ -1,0 +1,9 @@
+{
+  "name": "MovieTrivia",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "express": "~4.13.1",
+	"socket.io": "^1.4.4"
+  }
+}
